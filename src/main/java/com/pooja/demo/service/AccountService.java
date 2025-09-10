@@ -3,6 +3,7 @@ package com.pooja.demo.service;
 import com.pooja.demo.model.Account;
 import com.pooja.demo.dto.AccountCreateRequest;
 import com.pooja.demo.model.AccountStatus;
+import com.pooja.demo.model.KYCStatus;
 import com.pooja.demo.repository.AccountRepository;
 import com.pooja.demo.service.FraudCheckService;
 import com.pooja.demo.service.KYCService;
@@ -30,22 +31,22 @@ public class AccountService {
         Account account = new Account();
         account.setUserId(request.getUserId());
         account.setAccountNumber(generateAccountNumber());
-        account.setStatus(AccountStatus.PENDING);
+        account.setAccountStatus(AccountStatus.PENDING);
         
         // Save initial account
         account = accountRepository.save(account);
         
         // Perform KYC check
-        boolean kycValid = kycService.performKYCCheck(account.getId(), request);
+        KYCStatus kycStatus = kycService.performKYCCheck(account, request);
         
         // Perform fraud check
         boolean fraudCheckPassed = fraudCheckService.checkFraud(request.getAadharNumber());
         
         // Update account status based on checks
-        if (kycValid && fraudCheckPassed) {
-            account.setStatus(AccountStatus.APPROVED);
+        if (kycStatus == KYCStatus.VERIFIED && fraudCheckPassed) {
+            account.setAccountStatus(AccountStatus.APPROVED);
         } else {
-            account.setStatus(AccountStatus.REJECTED);
+            account.setAccountStatus(AccountStatus.REJECTED);
         }
         
         return accountRepository.save(account);
@@ -58,7 +59,7 @@ public class AccountService {
     
     public void deleteAccount(String id) {
         Account account = getAccount(id);
-        account.setStatus(AccountStatus.CLOSED);
+        account.setAccountStatus(AccountStatus.CLOSED);
         accountRepository.save(account);
     }
     
@@ -71,3 +72,4 @@ public class AccountService {
         return String.format("%012d", UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
     }
 }
+//this is comment

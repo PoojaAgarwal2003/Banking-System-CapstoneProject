@@ -27,11 +27,7 @@ public class KYCDetails {
     private String phoneNumber;
     
     @Enumerated(EnumType.STRING)
-    private KYCStatus status = KYCStatus.PENDING;
+    private KYCStatus KYCstatus = KYCStatus.PENDING;
 }
 
-enum KYCStatus {
-    PENDING,
-    VERIFIED,
-    REJECTED
-}
+

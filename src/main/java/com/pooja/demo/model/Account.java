@@ -23,7 +23,7 @@ public class Account {
     private BigDecimal balance = BigDecimal.ZERO;
     
     @Enumerated(EnumType.STRING)
-    private AccountStatus status;
+    private AccountStatus accountStatus;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
